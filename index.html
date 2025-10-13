@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charaset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ES下書き支援ツール</title>
+        <style>
+            body {font-family: sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+            h1 {border-bottom: 2px solid #ccc; padding-bottom: 10px; }
+            label {display: block; margin-top: 15px; font-weight: bold; }
+            input[type="text"], textarea {width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; box-sizing: border-box; }
+            textarea {resize: vertical; height: 150px; }
+            button {margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;}
+            button:hover {background-color: #0056b3; }
+            #savedList {margin-top: 40px;}
+            .entry { border: 1px solid #eee; padding:15px; margin-bottom: 15px; background-color: #f9f9f9; }
+            .entry h3 {margin-top: 0; color: #333;} 
+        </style>
+    </head>
+
+    <body>
+        <h1>ES下書き支援ツール</h1>
+        
+        <section id="inputForm">
+            <h2>新規作成・編集</h2>
+            <form>
+                <div>
+                    <label for="companyName">企業名:</label>
+                    <input type="text" id="companyName" placeholder="株式会社⭕️⭕️" required>
+                </div>
+
+                <div>
+                    <label for="motivationText">志望動機:</label>
+                    <textarea id="motivationText" placeholder="志望動機を入力してください..." required></textarea>
+                    <p id="charCount">文字数: 0</p>
+                </div>
+
+                <button type="submit" id="saveButton">志望動機を保存</button>
+            </form>
+        </section>
+
+        <hr>
+
+        <section id="savedList">
+            <h2>保存済みのES</h2>
+            <p>ここに保存済みのエントリーが表示されます。</p>
+        </section>
+
+        <script src="app.js"></script>
+
+    </body>
+</html>
