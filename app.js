@@ -10,7 +10,7 @@ const savedListContainer = document.getElementById('savedList');
 const STORAGE_KEY = 'esDrafts';
 
 //編集中データ ID（編集機能用、未実装）
-let editingID = null;
+//let editingID = null;
 
 // ===========================================
 // リアルタイム文字数カウント機能
@@ -39,18 +39,22 @@ motivationTextInput.addEventListener('input', updateCharCount);
 */
 
 // ===========================================
-// データの取得・保存機能
+// データの取得機能
 // ===========================================
-
 /**
  * ローカルストレージからデータを取得する
  * @returns {Array} 保存されている志望動機の配列。データがない場合は空の配列を返す。
+*/
 function getDrafts() {
     const draftsJson = localStorage.getItem(STORAGE_KEY);
     // JSON文字列をJavaScriptのオブジェクト（配列）に戻して返す
     return draftsJson ? JSON.parse(draftsJson) : [];
-}*/
+}
 
+
+// ===========================================
+// データの保存機能
+// ===========================================
 /**
  * データをローカルストレージに保存する
  * @param {Array} drafts - 保存する志望動機の配列
@@ -183,7 +187,7 @@ function deleteDraft(id) {
 /**
  * 保存されている全ての志望動機を画面に表示する
  */
-/*
+
 function renderDrafts() {
     const drafts = getDrafts();
     
@@ -220,7 +224,7 @@ function renderDrafts() {
     //編集：項目をクリックしたら編集を開始。
     entryDiv.addEventListener(`click`, () => startEdit(draft)); 
 }
-*/
+
 /**
  * 編集機能の追加 
  * @param {Object} draft - 編集するデータ
@@ -264,4 +268,4 @@ function startEdit(draft) {
 // ===========================================
 
 // ブラウザがロードされたら、保存済みのデータを表示する
-document.addEventListener('DOMContentLoaded', renderDrafts);
+//document.addEventListener('DOMContentLoaded', renderDrafts);
