@@ -190,6 +190,9 @@ function deleteDraft(id) {
 
 function renderDrafts() {
     const drafts = getDrafts();
+
+    console.log("drafts:", drafts, "typeof drafts:", typeof drafts);
+    console.log("Array.isArray(drafts):", Array.isArray(drafts));
     
     // リストコンテナを一度空にする
     savedListContainer.innerHTML = ''; 
@@ -197,6 +200,11 @@ function renderDrafts() {
     if (drafts.length === 0) {
         savedListContainer.innerHTML = '<p>まだ保存された志望動機はありません。</p>';
         return;
+    }
+
+    //draftsが配列でない場合の対処
+    if(!Array.isArray(drafts)) {
+        drafts = [drafts]; // 配列に変換
     }
 
     // データの数だけHTML要素を作成し、コンテナに追加
@@ -268,4 +276,4 @@ function startEdit(draft) {
 // ===========================================
 
 // ブラウザがロードされたら、保存済みのデータを表示する
-//document.addEventListener('DOMContentLoaded', renderDrafts);
+document.addEventListener('DOMContentLoaded', renderDrafts);
