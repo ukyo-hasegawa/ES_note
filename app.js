@@ -45,12 +45,11 @@ motivationTextInput.addEventListener('input', updateCharCount);
 /**
  * ローカルストレージからデータを取得する
  * @returns {Array} 保存されている志望動機の配列。データがない場合は空の配列を返す。
- */
 function getDrafts() {
     const draftsJson = localStorage.getItem(STORAGE_KEY);
     // JSON文字列をJavaScriptのオブジェクト（配列）に戻して返す
     return draftsJson ? JSON.parse(draftsJson) : [];
-}
+}*/
 
 /**
  * データをローカルストレージに保存する
@@ -95,24 +94,37 @@ function addQuestionSection() {
  * @param {Event} event - イベントオブジェクト
  */
 function handleSave(event) {
+
     event.preventDefault(); // フォームの送信によるページリロードを防ぐ
     
-    const companyName = companyNameInput.value.trim();
-    const motivationText = motivationTextInput.value.trim();
+    const companyName = document.getElementById('companyName').value;
+    const motivationText = document.getElementById('motivationText').value;
+
+    const data = {
+        companyName: companyName,
+        motivationText: motivationText
+    }
+
     
-    // 入力が空でないかチェック
+    
+    /* 入力が空でないかチェック
     if (!companyName || !motivationText) {
         alert('企業名と志望動機の両方を入力してください。');
         return;
-    }
+    }*/
 
+    /*
     let drafts = getDrafts();
     let alertMessage = '';
+    */
 
+    /*
     if (editingID != null) {
         
     }
+    */
     
+    /*
     // 新しい志望動機データを作成
     const newDraft = {
         id: Date.now(), // ユニークなIDとしてタイムスタンプを使用
@@ -120,20 +132,24 @@ function handleSave(event) {
         text: motivationText,
         savedAt: new Date().toLocaleString('ja-JP') // 保存日時
     };
-    
+    */
+    /*
     // 既存のデータを取得し、新しいデータを追加
     const drafts = getDrafts();
     drafts.unshift(newDraft); // 配列の先頭に追加
+    */
     
     // データを保存
-    saveDrafts(drafts);
+    saveDrafts(data);
     
+    /*
     // 画面表示を更新し、フォームをリセット
     renderDrafts();
     companyNameInput.value = '';
     motivationTextInput.value = '';
     updateCharCount(); // 文字数表示もリセット
-    
+    */
+       
     alert(`「${companyName}」の志望動機を保存しました！`);
 }
 
