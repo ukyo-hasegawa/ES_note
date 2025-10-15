@@ -9,6 +9,9 @@ const savedListContainer = document.getElementById('savedList');
 // ローカルストレージで使用するキー名
 const STORAGE_KEY = 'esDrafts';
 
+//編集中データ ID（編集機能用、未実装）
+let editingID = null;
+
 // ===========================================
 // リアルタイム文字数カウント機能
 // ===========================================
@@ -58,6 +61,35 @@ function saveDrafts(drafts) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(drafts));
 }
 
+// ===========================================
+// 質問項目の追加機能
+// ===========================================
+
+/**
+ * 質問項目を追加する
+ */
+function addQuestionSection() {
+    const questionIndex = document.getElementById('additionalSections');
+    const sectionIndex = questionIndex.children.length; //additionalSectionsの子要素数を取得して意味あるのか？
+    const div = document.createElement('div');
+    div.classList.add(`question-section`);
+    div.innerHTML = 
+    ` <hr>
+        <label for="q&(sectionIndex)">質問 ${sectionIndex + 1}：</label>
+        <input type="text" id="q${sectionIndex}" name="question${sectionIndex}" placeholder="質問を入力"> required>
+        <label for="a${sectionIndex}">回答：</label>
+        <textarea id="a${sectionIndex}" name="answer${sectionIndex}" placeholder="回答を入力" required></textarea>
+        <button type="button" class="remove-btn">削除</button>
+        `;
+    //削除ボタン機能をつける
+    div.querySelector('.remove-btn').addEventListener('click', () => {
+        conteainer.removeChild(div);
+    });
+    
+    container.appendChild(div);
+}
+
+
 /**
  * 「保存」ボタンが押されたときの処理
  * @param {Event} event - イベントオブジェクト
@@ -72,6 +104,13 @@ function handleSave(event) {
     if (!companyName || !motivationText) {
         alert('企業名と志望動機の両方を入力してください。');
         return;
+    }
+
+    let drafts = getDrafts();
+    let alertMessage = '';
+
+    if (editingID != null) {
+        
     }
     
     // 新しい志望動機データを作成
@@ -159,17 +198,47 @@ function renderDrafts() {
         // リストコンテナに追加
         savedListContainer.appendChild(entryDiv);
     });
+
+    //編集：項目をクリックしたら編集を開始。
+    entryDiv.addEventListener(`click`, () => startEdit(draft)); 
 }
 
 /**
  * 編集機能の追加 
- * @param {number} id - 編集するデータのID
- * @returns {void}
+ * @param {Object} draft - 編集するデータ
  * 
- */
-function editDraft(id) {
+ **/
+ 
+function startEdit(draft) {
+    //1 . 編集中のIDをセット
+    editingID = draft.id;
+
+    //2 .フォームにデータをロード
+    companyNameInput.value = draft.companyName;
+    motivationTextInput.value = draft.text;
+
+    //3 . 文字数表示を更新
+    updateCharCount(); 
+
+    //4 . ボタンの表示を「編集モード」に変更
+    saveButton.textContent = `更新`;
+
+}
     const drafts = getDrafts();
     const draftToEdit = drafts.find(draft => draft.id === id);
+
+    // 編集対象のデータが見つからない場合は終了
+    if (!draftToEdit) {
+        alert('編集対象の下書きが見つかりません。');
+        return;
+    }
+
+    // フォームにデータをセット
+    companyNameInput.value = draftToEdit.companyName;
+    motivationTextInput.value = draftToEdit.text;
+    updateCharCount(); // 文字数表示を更新
+}
+
 
 
 // ===========================================
