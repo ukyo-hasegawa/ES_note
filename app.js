@@ -15,10 +15,10 @@ let editingID = null;
 // ===========================================
 // リアルタイム文字数カウント機能
 // ===========================================
-
 /**
  * テキストエリアに入力があるたびに文字数をカウントし、表示を更新する
  */
+/*
 function updateCharCount() {
     const currentLength = motivationTextInput.value.length;
     
@@ -36,7 +36,7 @@ function updateCharCount() {
 
 // 志望動機入力欄に 'input' イベントリスナーを設定
 motivationTextInput.addEventListener('input', updateCharCount);
-
+*/
 
 // ===========================================
 // データの取得・保存機能
@@ -60,13 +60,14 @@ function saveDrafts(drafts) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(drafts));
 }
 
+/*
 // ===========================================
 // 質問項目の追加機能
 // ===========================================
 
 /**
  * 質問項目を追加する
- */
+
 function addQuestionSection() {
     const questionIndex = document.getElementById('additionalSections');
     const sectionIndex = questionIndex.children.length; //additionalSectionsの子要素数を取得して意味あるのか？
@@ -87,7 +88,7 @@ function addQuestionSection() {
     
     container.appendChild(div);
 }
-
+*/
 
 /**
  * 「保存」ボタンが押されたときの処理
@@ -149,7 +150,7 @@ function handleSave(event) {
     motivationTextInput.value = '';
     updateCharCount(); // 文字数表示もリセット
     */
-       
+
     alert(`「${companyName}」の志望動機を保存しました！`);
 }
 
@@ -182,6 +183,7 @@ function deleteDraft(id) {
 /**
  * 保存されている全ての志望動機を画面に表示する
  */
+/*
 function renderDrafts() {
     const drafts = getDrafts();
     
@@ -218,13 +220,13 @@ function renderDrafts() {
     //編集：項目をクリックしたら編集を開始。
     entryDiv.addEventListener(`click`, () => startEdit(draft)); 
 }
-
+*/
 /**
  * 編集機能の追加 
  * @param {Object} draft - 編集するデータ
  * 
  **/
- 
+ /*
 function startEdit(draft) {
     //1 . 編集中のIDをセット
     editingID = draft.id;
@@ -238,8 +240,10 @@ function startEdit(draft) {
 
     //4 . ボタンの表示を「編集モード」に変更
     saveButton.textContent = `更新`;
-
 }
+*/
+
+/*
     const drafts = getDrafts();
     const draftToEdit = drafts.find(draft => draft.id === id);
 
@@ -253,9 +257,7 @@ function startEdit(draft) {
     companyNameInput.value = draftToEdit.companyName;
     motivationTextInput.value = draftToEdit.text;
     updateCharCount(); // 文字数表示を更新
-}
-
-
+*/
 
 // ===========================================
 // 🌟 アプリケーションの初期化
