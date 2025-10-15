@@ -190,6 +190,8 @@ function deleteDraft(id) {
 
 function renderDrafts() {
     const drafts = getDrafts();
+    let Array_drafts = [];
+
 
     console.log("drafts:", drafts, "typeof drafts:", typeof drafts);
     console.log("Array.isArray(drafts):", Array.isArray(drafts));
@@ -204,11 +206,11 @@ function renderDrafts() {
 
     //draftsが配列でない場合の対処
     if(!Array.isArray(drafts)) {
-        drafts = [drafts]; // 配列に変換
+        Array_drafts = [drafts]; // 配列に変換
     }
 
     // データの数だけHTML要素を作成し、コンテナに追加
-    drafts.forEach(draft => {
+    Array_drafts.forEach(draft => {
         // 🌟 志望動機一つの表示要素を作成
         const entryDiv = document.createElement('div');
         entryDiv.classList.add('entry');
