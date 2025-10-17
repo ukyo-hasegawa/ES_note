@@ -265,6 +265,8 @@ function renderDrafts() {
     });
 }
 
+
+
 /**
  * 編集機能の追加 
  * @param {Object} draft - 編集するデータ
@@ -272,6 +274,9 @@ function renderDrafts() {
  **/
  
 function startEdit(draft) {
+    //フォームのリセット
+    resetForm();
+
     //1 . 編集中のIDをセット
     editingID = draft.id;
 
@@ -279,11 +284,73 @@ function startEdit(draft) {
     companyNameInput.value = draft.companyName;
     motivationTextInput.value = draft.motivationText;
 
+    //追加質問項目の復元
+    if(draft.additionalQuestions && Array.isArray(draft.additionalQuestions)) {
+        restoreAdditionalQuestions(draft.additionalQuestions);
+    }
     //3 . ボタンの表示を「編集モード」に変更
     saveButton.textContent = `更新`;
 
     // 4. フォーム上部に移動
     window.scrollTo({ top: 0, behavior: `smooth`});
+}
+
+// 🌟 データの復元ヘルパー関数 (startEditの近くに追加) 🌟
+
+/**
+ * フォームから追加の質問項目のデータを取得する
+ * @returns {Array<Object>} 質問と回答のペアの配列
+ */
+function getAdditionalQuestionData() {
+    const questionsContainer = document.getElementById('additionalSections');
+    const questionSections = questionsContainer.querySelectorAll('.question-section');
+    const data = [];
+
+    questionSections.forEach(section => {
+        // 'question1' や 'answer1' といったIDを持つ要素を検索
+        const questionInput = section.querySelector('input[type="text"]');
+        const answerTextarea = section.querySelector('textarea');
+
+        if (questionInput && answerTextarea) {
+            data.push({
+                question: questionInput.value,
+                answer: answerTextarea.value
+            });
+        }
+    });
+
+    return data;
+}
+
+/**
+ * 保存されたデータから追加の質問項目をフォームに復元する
+ * @param {Array<Object>} questions - 質問と回答のペアの配列
+ */
+function restoreAdditionalQuestions(questions) {
+    questions.forEach(item => {
+        // addSectionのロジックを応用し、要素を作成
+        const container = document.getElementById('additionalSections');
+        const sectionIndex = container.children.length; 
+        const questionNumber = sectionIndex + 1;
+
+        const div = document.createElement('div');
+        div.classList.add(`question-section`);
+        div.innerHTML = 
+        ` <hr>
+            <label for="question${questionNumber}">質問 ${questionNumber}：</label>
+            <input type="text" id="question${questionNumber}" name="question${questionNumber}" placeholder="質問を入力" required value="${item.question}">
+            <label for="answer${questionNumber}">回答：</label>
+            <textarea id="answer${questionNumber}" name="answer${questionNumber}" placeholder="回答を入力" required>${item.answer}</textarea>
+            <button type="button" class="remove-btn">削除</button>
+        `;
+        
+        // 削除機能のリスナーを再設定
+        div.querySelector('.remove-btn').addEventListener('click', () => {
+            container.removeChild(div);
+        });
+        
+        container.appendChild(div);
+    });
 }
 
 // 「質問項目を追加」ボタンにイベントリスナーを設定
