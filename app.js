@@ -10,7 +10,7 @@ const savedListContainer = document.getElementById('savedList');
 const STORAGE_KEY = 'esDrafts';
 
 //編集中データ ID（編集機能用、未実装）
-//let editingID = null;
+let editingID = null;
 
 // ===========================================
 // リアルタイム文字数カウント機能
@@ -105,13 +105,57 @@ function handleSave(event) {
     const companyName = document.getElementById('companyName').value;
     const motivationText = document.getElementById('motivationText').value;
 
-    const data = {
-        companyName: companyName,
-        motivationText: motivationText
+    if (!companyName || !motivationText) {
+        alert('企業名と志望動機の両方を入力してください。');
+        return;
     }
+    
+    let existingData = getDrafts();
+    let alertMessage = '';
 
-    
-    
+    //編集モードのロジック
+    if(editingID != null) {
+        //既存データを検索し、該当するIDのデータを更新
+        existingData = existingData.map(draft => {
+            if(draft.id === editingID) {
+                return {
+                    ...draft, //既存データを展開
+                    companyName: companyName,
+                    //志望動機の内容を更新
+                    motivationText: motivationText,
+                    savedAt: new Date().toLocaleString('ja-JP') // 更新日時をセット
+                };
+            }
+            return draft; //他のデータはそのまま返す
+        });
+        alertMessage = `「${companyName}」の志望動機を更新しました！`;
+
+        //編集モード終了
+        editingID = null;
+        saveButton.textContent = `保存`; // ボタン表示を元に戻す
+    }
+    //新規保存モードのロジック
+    else {
+        const new_data = {
+            id: Date.now(), // ユニークなIDとしてタイムスタンプを使用
+            companyName: companyName,
+            motivationText: motivationText,
+            savedAt: new Date().toLocaleString('ja-JP') // 保存日時
+        };
+
+        //新しいデータを配列の先頭に追加
+        existingData.unshift(new_data);
+        alertMessage = `「${companyName}」の志望動機を保存しました！`;
+    }
+    //まとめて保存
+    saveDrafts(existingData);
+    companyNameInput.value = '';
+    motivationTextInput.value = '';
+    //updateCharCount(); // 文字数表示もリセット
+
+    //表示の更新
+    renderDrafts();
+
     /* 入力が空でないかチェック
     if (!companyName || !motivationText) {
         alert('企業名と志望動機の両方を入力してください。');
@@ -143,9 +187,6 @@ function handleSave(event) {
     const drafts = getDrafts();
     drafts.unshift(newDraft); // 配列の先頭に追加
     */
-    
-    // データを保存
-    saveDrafts(data);
     
     /*
     // 画面表示を更新し、フォームをリセット
@@ -208,9 +249,10 @@ function renderDrafts() {
     if(!Array.isArray(drafts)) {
         Array_drafts = [drafts]; // 配列に変換
     }
-
+    console.log("Array.isArray(drafts):", Array.isArray(drafts));
+    
     // データの数だけHTML要素を作成し、コンテナに追加
-    Array_drafts.forEach(draft => {
+    drafts.forEach(draft => {
         // 🌟 志望動機一つの表示要素を作成
         const entryDiv = document.createElement('div');
         entryDiv.classList.add('entry');
@@ -218,21 +260,25 @@ function renderDrafts() {
         // 企業名と保存日時
         entryDiv.innerHTML = `
             <h3>${draft.companyName}</h3>
-            <p><strong>保存日時:</strong> ${draft.savedAt}</p>
-            <p>${draft.text.replace(/\n/g, '<br>')}</p>
+            <p><strong>保存日時:</strong> ${draft.savedAt}${draft.updatedAt ? ` (更新日時: ${draft.updatedAt})` : ''}</p>
+            <p>${draft.motivationText.replace(/\n/g, '<br>')}</p>
             <button class="delete-button" data-id="${draft.id}">削除</button>
         `;
-        
+
+
         // 削除ボタンにイベントリスナーを追加
         const deleteBtn = entryDiv.querySelector('.delete-button');
-        deleteBtn.addEventListener('click', () => deleteDraft(draft.id));
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // クリックイベントのバブリングを防止
+            deleteDraft(draft.id);
+        });
 
         // リストコンテナに追加
         savedListContainer.appendChild(entryDiv);
-    });
 
     //編集：項目をクリックしたら編集を開始。
     entryDiv.addEventListener(`click`, () => startEdit(draft)); 
+    });
 }
 
 /**
@@ -240,22 +286,22 @@ function renderDrafts() {
  * @param {Object} draft - 編集するデータ
  * 
  **/
- /*
+ 
 function startEdit(draft) {
     //1 . 編集中のIDをセット
     editingID = draft.id;
 
     //2 .フォームにデータをロード
     companyNameInput.value = draft.companyName;
-    motivationTextInput.value = draft.text;
+    motivationTextInput.value = draft.motivationText;
 
-    //3 . 文字数表示を更新
-    updateCharCount(); 
-
-    //4 . ボタンの表示を「編集モード」に変更
+    //3 . ボタンの表示を「編集モード」に変更
     saveButton.textContent = `更新`;
+
+    // 4. フォーム上部に移動
+    window.scrollTo({ top: 0, behavior: `smooth`});
 }
-*/
+
 
 /*
     const drafts = getDrafts();
