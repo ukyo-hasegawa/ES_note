@@ -130,6 +130,9 @@ function handleSave(event) {
         alert('企業名と志望動機の両方を入力してください。');
         return;
     }
+
+    //追加質問項目のデータを取得
+    const additionalQuestions = getAdditionalQuestionData();
     
     let existingData = getDrafts();
     let alertMessage = '';
@@ -144,6 +147,7 @@ function handleSave(event) {
                     companyName: companyName,
                     //志望動機の内容を更新
                     motivationText: motivationText,
+                    additionalQuestions: additionalQuestions,
                     savedAt: new Date().toLocaleString('ja-JP') // 更新日時をセット
                 };
             }
