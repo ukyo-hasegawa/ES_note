@@ -5,7 +5,7 @@ const motivationTextInput = document.getElementById('motivationText');
 const saveButton = document.getElementById('saveButton');
 const charCountDisplay = document.getElementById('charCount');
 const savedListContainer = document.getElementById('savedList');
-
+const addSectionButton = document.getElementById('addSectionButton');
 // ローカルストレージで使用するキー名
 const STORAGE_KEY = 'esDrafts';
 
@@ -34,9 +34,7 @@ function updateCharCount() {
     }
 }
 
-// 志望動機入力欄に 'input' イベントリスナーを設定
-motivationTextInput.addEventListener('input', updateCharCount);
-*/
+
 
 // ===========================================
 // データの取得機能
@@ -71,28 +69,35 @@ function saveDrafts(drafts) {
 
 /**
  * 質問項目を追加する
+ */
+function addSection() {
+    // 追加セクションのコンテナを取得
+    
+    // 現在の質問数を取得し、新しい質問のインデックスを決定
+    const sectionIndex = addSectionButton.children.length; 
+    const questionNumber = sectionIndex + 1;
 
-function addQuestionSection() {
-    const questionIndex = document.getElementById('additionalSections');
-    const sectionIndex = questionIndex.children.length; //additionalSectionsの子要素数を取得して意味あるのか？
     const div = document.createElement('div');
     div.classList.add(`question-section`);
     div.innerHTML = 
     ` <hr>
-        <label for="q&(sectionIndex)">質問 ${sectionIndex + 1}：</label>
-        <input type="text" id="q${sectionIndex}" name="question${sectionIndex}" placeholder="質問を入力"> required>
-        <label for="a${sectionIndex}">回答：</label>
-        <textarea id="a${sectionIndex}" name="answer${sectionIndex}" placeholder="回答を入力" required></textarea>
+        <label for="question${questionNumber}">質問 ${questionNumber}：</label>
+        <input type="text" id="question${questionNumber}" name="question${questionNumber}" placeholder="質問を入力" required>
+        <label for="answer${questionNumber}">回答：</label>
+        <textarea id="answer${questionNumber}" name="answer${questionNumber}" placeholder="回答を入力" required></textarea>
         <button type="button" class="remove-btn">削除</button>
-        `;
-    //削除ボタン機能をつける
+    `;
+    
+    // 削除ボタン機能をつける
+    // 削除ボタンをクリックしたら、その親要素（div.question-section）を削除する
     div.querySelector('.remove-btn').addEventListener('click', () => {
-        conteainer.removeChild(div);
+        container.removeChild(div);
     });
     
+    // コンテナに新しい質問項目を追加
     container.appendChild(div);
 }
-*/
+
 
 /**
  * 「保存」ボタンが押されたときの処理
@@ -156,47 +161,7 @@ function handleSave(event) {
     //表示の更新
     renderDrafts();
 
-    /* 入力が空でないかチェック
-    if (!companyName || !motivationText) {
-        alert('企業名と志望動機の両方を入力してください。');
-        return;
-    }*/
-
-    /*
-    let drafts = getDrafts();
-    let alertMessage = '';
-    */
-
-    /*
-    if (editingID != null) {
-        
-    }
-    */
-    
-    /*
-    // 新しい志望動機データを作成
-    const newDraft = {
-        id: Date.now(), // ユニークなIDとしてタイムスタンプを使用
-        companyName: companyName,
-        text: motivationText,
-        savedAt: new Date().toLocaleString('ja-JP') // 保存日時
-    };
-    */
-    /*
-    // 既存のデータを取得し、新しいデータを追加
-    const drafts = getDrafts();
-    drafts.unshift(newDraft); // 配列の先頭に追加
-    */
-    
-    /*
-    // 画面表示を更新し、フォームをリセット
-    renderDrafts();
-    companyNameInput.value = '';
-    motivationTextInput.value = '';
-    updateCharCount(); // 文字数表示もリセット
-    */
-
-    alert(`「${companyName}」の志望動機を保存しました！`);
+    alert(alertMessage);
 }
 
 // フォームの submit イベントに保存処理を設定
@@ -302,22 +267,9 @@ function startEdit(draft) {
     window.scrollTo({ top: 0, behavior: `smooth`});
 }
 
-
-/*
-    const drafts = getDrafts();
-    const draftToEdit = drafts.find(draft => draft.id === id);
-
-    // 編集対象のデータが見つからない場合は終了
-    if (!draftToEdit) {
-        alert('編集対象の下書きが見つかりません。');
-        return;
-    }
-
-    // フォームにデータをセット
-    companyNameInput.value = draftToEdit.companyName;
-    motivationTextInput.value = draftToEdit.text;
-    updateCharCount(); // 文字数表示を更新
-*/
+// 「質問項目を追加」ボタンにイベントリスナーを設定
+// 質問項目追加ボタンにイベントリスナーを設定 (DOMContentLoadedの外)
+addSectionButton.addEventListener('click', addSection);
 
 // ===========================================
 // 🌟 アプリケーションの初期化
