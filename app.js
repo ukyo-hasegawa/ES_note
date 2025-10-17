@@ -115,7 +115,9 @@ function addSection() {
         <input type="text" id="question${questionNumber}" name="question${questionNumber}" placeholder="質問を入力" required>
         <label for="answer${questionNumber}">回答：</label>
         <textarea id="answer${questionNumber}" name="answer${questionNumber}" placeholder="回答を入力" required></textarea>
-        <button type="button" class="remove-btn">削除</button>
+        
+        <p class="char-count-display">文字数：0</p> 
+        <div><button type="button" class="remove-btn">削除</button></div>
     `;
 
     //動的に生成された要素に対してもイベントリスナーを設定
@@ -358,6 +360,8 @@ function restoreAdditionalQuestions(questions) {
             <input type="text" id="question${questionNumber}" name="question${questionNumber}" placeholder="質問を入力" required value="${item.question}">
             <label for="answer${questionNumber}">回答：</label>
             <textarea id="answer${questionNumber}" name="answer${questionNumber}" placeholder="回答を入力" required>${item.answer}</textarea>
+            
+            <p class="char-count-display">文字数：${item.answer.length}</p>
             <button type="button" class="remove-btn">削除</button>
         `;
 
