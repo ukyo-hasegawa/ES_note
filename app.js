@@ -17,14 +17,20 @@ let editingID = null;
 // ===========================================
 /**
  * テキストエリアに入力があるたびに文字数をカウントし、表示を更新する
+ * @param {Event} event - inputイベントオブジェクト
  */
-/*
-function updateCharCount() {
-    const currentLength = motivationTextInput.value.length;
+function updateCharCount(event) {
+    const textarea = event.target;;
+    const currentLength = textarea.value.length;
+    
+    //カウント表示要素を取得
+    const charCountDisplay = textarea.nextElementSibling;
     
     // 文字数表示を更新
     charCountDisplay.textContent = `文字数：${currentLength}`;
-    
+
+    if(!charCountDisplay) return; //表示要素がない場合は終了
+     
     // 400字を制限として設定し、超えたら警告を出す（応用機能）
     if (currentLength > 400) {
         charCountDisplay.style.color = 'red';
@@ -34,13 +40,21 @@ function updateCharCount() {
     }
 }
 
+// テキストエリアの input イベントに文字数カウント機能を設定
+motivationTextInput.addEventListener('input', updateCharCount);
+
 /**
  * フォームをデフォルトの状態に戻す
  */
 function resetForm() {
     companyNameInput.value = '';
     motivationTextInput.value = '';
-    //updateCharCount(); // 文字数表示もリセット
+    
+    //メインの文字数表示のリセット
+    if(charCountDisplay) {
+        charCountDisplay.textContent = `文字数：0`;
+        charCountDisplay.style.color = 'initial'; // 通常の色に戻す
+    }
 
     //編集モードの解除
     editingID = null;
@@ -103,8 +117,13 @@ function addSection() {
         <textarea id="answer${questionNumber}" name="answer${questionNumber}" placeholder="回答を入力" required></textarea>
         <button type="button" class="remove-btn">削除</button>
     `;
+
+    //動的に生成された要素に対してもイベントリスナーを設定
+    const new_texarea = div.querySelector(`#answer${questionNumber}`);
+    if(new_texarea) {
+        new_texarea.addEventListener('input', updateCharCount);
+    }
     
-    // 削除ボタン機能をつける
     // 削除ボタンをクリックしたら、その親要素（div.question-section）を削除する
     div.querySelector('.remove-btn').addEventListener('click', () => {
         container.removeChild(div);
@@ -343,6 +362,12 @@ function restoreAdditionalQuestions(questions) {
             <textarea id="answer${questionNumber}" name="answer${questionNumber}" placeholder="回答を入力" required>${item.answer}</textarea>
             <button type="button" class="remove-btn">削除</button>
         `;
+
+        //動的に生成された要素に対してもイベントリスナーを設定
+        const new_texarea = div.querySelector(`#answer${questionNumber}`);
+        if(new_texarea) {
+            new_texarea.addEventListener('input', updateCharCount);
+        }
         
         // 削除機能のリスナーを再設定
         div.querySelector('.remove-btn').addEventListener('click', () => {
