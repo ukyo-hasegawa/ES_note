@@ -104,7 +104,7 @@ function addSection() {
     const container = document.getElementById('additionalSections'); // 👈 ここで正しいコンテナを取得
     
     // 現在の質問数を取得し、新しい質問のインデックスを決定
-    const sectionIndex = addSectionButton.children.length; 
+    const sectionIndex = container.children.length; 
     const questionNumber = sectionIndex + 1;
 
     const div = document.createElement('div');
