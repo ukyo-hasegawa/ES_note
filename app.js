@@ -34,7 +34,22 @@ function updateCharCount() {
     }
 }
 
+/**
+ * フォームをデフォルトの状態に戻す
+ */
+function resetForm() {
+    companyNameInput.value = '';
+    motivationTextInput.value = '';
+    //updateCharCount(); // 文字数表示もリセット
 
+    //編集モードの解除
+    editingID = null;
+    saveButton.textContent = `保存`; // ボタン表示を元に戻す
+
+    //追加項目のクリア
+    const additionalSectionsContainer = document.getElementById(`additionalSections`);
+    additionalSectionsContainer.innerHTML = ``;
+}
 
 // ===========================================
 // データの取得機能
@@ -71,7 +86,8 @@ function saveDrafts(drafts) {
  * 質問項目を追加する
  */
 function addSection() {
-    // 追加セクションのコンテナを取得
+    // 追加セクションのコンテナをIDで取得 (必須)
+    const container = document.getElementById('additionalSections'); // 👈 ここで正しいコンテナを取得
     
     // 現在の質問数を取得し、新しい質問のインデックスを決定
     const sectionIndex = addSectionButton.children.length; 
@@ -154,9 +170,8 @@ function handleSave(event) {
     }
     //まとめて保存
     saveDrafts(existingData);
-    companyNameInput.value = '';
-    motivationTextInput.value = '';
-    //updateCharCount(); // 文字数表示もリセット
+    //フォームをリセット
+    resetForm();
 
     //表示の更新
     renderDrafts();
