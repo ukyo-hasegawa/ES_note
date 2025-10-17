@@ -10,11 +10,21 @@
             label {display: block; margin-top: 15px; font-weight: bold; }
             input[type="text"], textarea {width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ddd; box-sizing: border-box; }
             textarea {resize: vertical; height: 150px; }
-            button {margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer;}
-            button:hover {background-color: #0056b3; }
+            button {margin-top: 20px; padding: 10px 20px; background-color: white; color: black; border: 1px solid black; cursor: pointer;}
+            button:hover {background-color: white; }
             #savedList {margin-top: 40px;}
             .entry { border: 1px solid #eee; padding:15px; margin-bottom: 15px; background-color: #f9f9f9; }
             .entry h3 {margin-top: 0; color: #333;} 
+
+            /*文字数表示要素の背景色*/
+            .char-count-display, #charCount {
+                background-color: transparent;
+                margin-top: 5px;
+                text-align: right;
+                font-size: 0.9em;
+                color: #666;
+                padding-right: 0%;
+            }
         </style>
     </head>
 

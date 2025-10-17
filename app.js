@@ -314,8 +314,6 @@ function startEdit(draft) {
     window.scrollTo({ top: 0, behavior: `smooth`});
 }
 
-// 🌟 データの復元ヘルパー関数 (startEditの近くに追加) 🌟
-
 /**
  * フォームから追加の質問項目のデータを取得する
  * @returns {Array<Object>} 質問と回答のペアの配列
