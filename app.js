@@ -22,6 +22,10 @@ let editingID = null;
 function updateCharCount(event) {
     const textarea = event.target;;
     const currentLength = textarea.value.length;
+
+    //自動高さ調整
+    textarea.style.height = `auto`;
+    textarea.style.height = (textarea.scrollHeight) + `px`;
     
     //カウント表示要素を取得
     const charCountDisplay = textarea.nextElementSibling;
@@ -63,6 +67,17 @@ function resetForm() {
     //追加項目のクリア
     const additionalSectionsContainer = document.getElementById(`additionalSections`);
     additionalSectionsContainer.innerHTML = ``;
+}
+
+/**
+ * テキストエリアの初期高さを内容に合わせて調整する．
+ * @param {HTMLTextAreaElement} textarea - 高さを調整するテキストエリア要素
+ */
+function autoresizeTextarea(textarea) {
+    if(textarea) {
+        textarea.style.height  `auto`;
+        textarea.style.height = (textarea.scrollHeight) + `px`;
+    }
 }
 
 // ===========================================
@@ -308,6 +323,9 @@ function startEdit(draft) {
     companyNameInput.value = draft.companyName;
     motivationTextInput.value = draft.motivationText;
 
+    //メインの志望動機欄の高さを調整
+    autoresizeTextarea(motivationTextInput);
+
     //追加質問項目の復元
     if(draft.additionalQuestions && Array.isArray(draft.additionalQuestions)) {
         restoreAdditionalQuestions(draft.additionalQuestions);
@@ -349,7 +367,7 @@ function getAdditionalQuestionData() {
  * @param {Array<Object>} questions - 質問と回答のペアの配列
  * @returns {string} HTML文字列
  */
-function formattedAddtionalQuestions(questions) {
+function formattedAdditionalQuestions(questions) {
     if(!questions || questions.length === 0) {
         return '';
     }
@@ -357,7 +375,7 @@ function formattedAddtionalQuestions(questions) {
     let html = `<div class= "additional-questions">`;
     questions.forEach((item, index) => {
         //質問と回答の内容の改行を<br>に変換
-        const formattedQuestions = ImageBitmap.question.replace(/\n/g, '<br>');
+        const formattedQuestions = item.question.replace(/\n/g, '<br>');
         const formattedAnswer = item.answer.replace(/\n/g, '<br>');
 
         html += `
