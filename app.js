@@ -139,6 +139,8 @@ function addSection() {
     const new_texarea = div.querySelector(`#answer${questionNumber}`);
     if(new_texarea) {
         new_texarea.addEventListener('input', updateCharCount);
+        // 初期高さ調整（ここでは最低限の高さとなる。）
+        autoresizeTextarea(new_texarea);
     }
     
     // 削除ボタンをクリックしたら、その親要素（div.question-section）を削除する
@@ -419,6 +421,8 @@ function restoreAdditionalQuestions(questions) {
         const new_texarea = div.querySelector(`#answer${questionNumber}`);
         if(new_texarea) {
             new_texarea.addEventListener('input', updateCharCount);
+            // 高さ調整
+            autoresizeTextarea(new_texarea);
         }
         
         // 削除機能のリスナーを再設定
