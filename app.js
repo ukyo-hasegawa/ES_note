@@ -75,7 +75,7 @@ function resetForm() {
  */
 function autoresizeTextarea(textarea) {
     if(textarea) {
-        textarea.style.height  `auto`;
+        textarea.style.height = `auto`;
         textarea.style.height = (textarea.scrollHeight) + `px`;
     }
 }
@@ -134,6 +134,13 @@ function addSection() {
         <p class="char-count-display">文字数：0</p> 
         <div><button type="button" class="remove-btn">削除</button></div>
     `;
+
+    //質問へのイベントリスナー設定
+    const questionTextarea = div.querySelector(`#question&{questionNumber}`);
+    if(questionTextarea) {
+        questionTextarea.addEventListener(`input`, updateCharCount);
+        autoresizeTextarea(questionTextarea);
+    }
 
     //動的に生成された要素に対してもイベントリスナーを設定
     const new_texarea = div.querySelector(`#answer${questionNumber}`);
@@ -350,10 +357,13 @@ function getAdditionalQuestionData() {
 
     questionSections.forEach(section => {
         // 'question1' や 'answer1' といったIDを持つ要素を検索
-        const questionInput = section.querySelector('input[type="text"]');
-        const answerTextarea = section.querySelector('textarea');
+        const allTextareas = section.querySelectorAll(`textarea`);
 
-        if (questionInput && answerTextarea) {
+        const questionTextarea = allTextareas[0];
+        const answerTextarea = allTextareas[1];
+
+
+        if (questionTextarea && answerTextarea) {
             data.push({
                 question: questionInput.value,
                 answer: answerTextarea.value
@@ -416,6 +426,13 @@ function restoreAdditionalQuestions(questions) {
             <p class="char-count-display">文字数：${item.answer.length}</p>
             <button type="button" class="remove-btn">削除</button>
         `;
+
+        //質問へのイベントリスナー設定と高さ調整
+        const questionTextarea = div.querySelector(`#question${questionNumber}`);
+        if(questionTextarea) {
+            questionTextarea.addEventListener(`input`, updateCharCount);
+            autoresizeTextarea(questionTextarea);
+        }
 
         //動的に生成された要素に対してもイベントリスナーを設定
         const new_texarea = div.querySelector(`#answer${questionNumber}`);
