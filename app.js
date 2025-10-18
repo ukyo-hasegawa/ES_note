@@ -261,6 +261,9 @@ function renderDrafts() {
         // 🌟 志望動機一つの表示要素を作成
         const entryDiv = document.createElement('div');
         entryDiv.classList.add('entry');
+
+        // 追加質問の表示
+        const additionalHtml = formattedAdditionalQuestions(draft.additionalQuestions);
         
         // 企業名と保存日時
         entryDiv.innerHTML = `
@@ -339,6 +342,35 @@ function getAdditionalQuestionData() {
     });
 
     return data;
+}
+
+/**
+ * 追加質問の配列をリスト表示用のHTML文字列に変換する。
+ * @param {Array<Object>} questions - 質問と回答のペアの配列
+ * @returns {string} HTML文字列
+ */
+function formattedAddtionalQuestions(questions) {
+    if(!questions || questions.length === 0) {
+        return '';
+    }
+
+    let html = `<div class= "additional-questions">`;
+    questions.forEach((item, index) => {
+        //質問と回答の内容の改行を<br>に変換
+        const formattedQuestions = ImageBitmap.question.replace(/\n/g, '<br>');
+        const formattedAnswer = item.answer.replace(/\n/g, '<br>');
+
+        html += `
+            <div class="question-summary" style="margin-top: 15px; padding-left: 10px; border-left: 3px solid #ccc;">
+                <h4>質問 ${index + 1}：</h4>
+                <p style="white-space: pre-wrap;">${formattedQuestions}</p>
+                <h4>回答：</h4>
+                <p style="white-space: pre-wrap;">${formattedAnswer}</p>
+            </div>
+        `;
+    });
+    html += `</div>`;
+    return html; 
 }
 
 /**
