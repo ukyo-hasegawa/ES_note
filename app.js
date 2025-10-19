@@ -114,11 +114,10 @@ function saveDrafts(drafts) {
 /**
  * 質問項目を追加する
  */
+// app.js の addSection 関数 (修正後)
+
 function addSection() {
-    // 追加セクションのコンテナをIDで取得 (必須)
-    const container = document.getElementById('additionalSections'); // 👈 ここで正しいコンテナを取得
-    
-    // 現在の質問数を取得し、新しい質問のインデックスを決定
+    const container = document.getElementById('additionalSections');
     const sectionIndex = container.children.length; 
     const questionNumber = sectionIndex + 1;
 
@@ -127,27 +126,29 @@ function addSection() {
     div.innerHTML = 
     ` <hr>
         <label for="question${questionNumber}">質問 ${questionNumber}：</label>
-        <input type="text" id="question${questionNumber}" name="question${questionNumber}" placeholder="質問を入力" required>
+        <textarea id="question${questionNumber}" name="question${questionNumber}" placeholder="質問を入力" required></textarea>
+        
+        <p class="char-count-display question-char-count">文字数：0</p> 
+
         <label for="answer${questionNumber}">回答：</label>
         <textarea id="answer${questionNumber}" name="answer${questionNumber}" placeholder="回答を入力" required></textarea>
         
-        <p class="char-count-display">文字数：0</p> 
+        <p class="char-count-display answer-char-count">文字数：0</p>
         <div><button type="button" class="remove-btn">削除</button></div>
     `;
 
-    //質問へのイベントリスナー設定
-    const questionTextarea = div.querySelector(`#question&{questionNumber}`);
+    // 🌟 質問（textarea）へのイベントリスナー設定と高さ調整 🌟
+    const questionTextarea = div.querySelector(`#question${questionNumber}`);
     if(questionTextarea) {
         questionTextarea.addEventListener(`input`, updateCharCount);
         autoresizeTextarea(questionTextarea);
     }
 
-    //動的に生成された要素に対してもイベントリスナーを設定
-    const new_texarea = div.querySelector(`#answer${questionNumber}`);
-    if(new_texarea) {
-        new_texarea.addEventListener('input', updateCharCount);
-        // 初期高さ調整（ここでは最低限の高さとなる。）
-        autoresizeTextarea(new_texarea);
+    // 🌟 回答（textarea）へのイベントリスナー設定と高さ調整 🌟
+    const answerTextarea = div.querySelector(`#answer${questionNumber}`);
+    if(answerTextarea) {
+        answerTextarea.addEventListener('input', updateCharCount);
+        autoresizeTextarea(answerTextarea);
     }
     
     // 削除ボタンをクリックしたら、その親要素（div.question-section）を削除する
@@ -158,7 +159,6 @@ function addSection() {
     // コンテナに新しい質問項目を追加
     container.appendChild(div);
 }
-
 
 /**
  * 「保存」ボタンが押されたときの処理
@@ -293,8 +293,11 @@ function renderDrafts() {
         entryDiv.innerHTML = `
             <h3>${draft.companyName}</h3>
             <p><strong>保存日時:</strong> ${draft.savedAt}${draft.updatedAt ? ` (更新日時: ${draft.updatedAt})` : ''}</p>
-            <p>${draft.motivationText.replace(/\n/g, '<br>')}</p>
-            <button class="delete-button" data-id="${draft.id}">削除</button>
+            
+            <h4>【志望動機】</h4>
+            <p style="white-space: pre-wrap;">${draft.motivationText.replace(/\n/g, '<br>')}</p>
+            
+            ${additionalHtml} <button class="delete-button" data-id="${draft.id}">削除</button>
         `;
 
 
@@ -350,22 +353,23 @@ function startEdit(draft) {
  * フォームから追加の質問項目のデータを取得する
  * @returns {Array<Object>} 質問と回答のペアの配列
  */
+// app.js の getAdditionalQuestionData 関数 (修正後)
+
 function getAdditionalQuestionData() {
     const questionsContainer = document.getElementById('additionalSections');
     const questionSections = questionsContainer.querySelectorAll('.question-section');
     const data = [];
 
     questionSections.forEach(section => {
-        // 'question1' や 'answer1' といったIDを持つ要素を検索
-        const allTextareas = section.querySelectorAll(`textarea`);
+        // 🚨 修正: 最初の二つの textarea を質問と回答として取得
+        const allTextareas = section.querySelectorAll('textarea');
 
-        const questionTextarea = allTextareas[0];
-        const answerTextarea = allTextareas[1];
-
+        const questionTextarea = allTextareas[0]; // 質問の textarea
+        const answerTextarea = allTextareas[1];   // 回答の textarea
 
         if (questionTextarea && answerTextarea) {
             data.push({
-                question: questionInput.value,
+                question: questionTextarea.value, // 🌟 questionTextarea の値を参照 🌟
                 answer: answerTextarea.value
             });
         }
@@ -407,9 +411,10 @@ function formattedAdditionalQuestions(questions) {
  * 保存されたデータから追加の質問項目をフォームに復元する
  * @param {Array<Object>} questions - 質問と回答のペアの配列
  */
+// app.js の restoreAdditionalQuestions 関数 (修正後)
+
 function restoreAdditionalQuestions(questions) {
     questions.forEach(item => {
-        // addSectionのロジックを応用し、要素を作成
         const container = document.getElementById('additionalSections');
         const sectionIndex = container.children.length; 
         const questionNumber = sectionIndex + 1;
@@ -419,27 +424,29 @@ function restoreAdditionalQuestions(questions) {
         div.innerHTML = 
         ` <hr>
             <label for="question${questionNumber}">質問 ${questionNumber}：</label>
-            <input type="text" id="question${questionNumber}" name="question${questionNumber}" placeholder="質問を入力" required value="${item.question}">
+            <textarea id="question${questionNumber}" name="question${questionNumber}" placeholder="質問を入力" required>${item.question}</textarea>
+            
+            <p class="char-count-display question-char-count">文字数：${item.question.length}</p>
+
             <label for="answer${questionNumber}">回答：</label>
             <textarea id="answer${questionNumber}" name="answer${questionNumber}" placeholder="回答を入力" required>${item.answer}</textarea>
             
-            <p class="char-count-display">文字数：${item.answer.length}</p>
+            <p class="char-count-display answer-char-count">文字数：${item.answer.length}</p>
             <button type="button" class="remove-btn">削除</button>
         `;
 
-        //質問へのイベントリスナー設定と高さ調整
+        // 🌟 質問（textarea）へのイベントリスナー設定と高さ調整 🌟
         const questionTextarea = div.querySelector(`#question${questionNumber}`);
         if(questionTextarea) {
             questionTextarea.addEventListener(`input`, updateCharCount);
             autoresizeTextarea(questionTextarea);
         }
 
-        //動的に生成された要素に対してもイベントリスナーを設定
-        const new_texarea = div.querySelector(`#answer${questionNumber}`);
-        if(new_texarea) {
-            new_texarea.addEventListener('input', updateCharCount);
-            // 高さ調整
-            autoresizeTextarea(new_texarea);
+        // 🌟 回答（textarea）へのイベントリスナー設定と高さ調整 🌟
+        const answerTextarea = div.querySelector(`#answer${questionNumber}`);
+        if(answerTextarea) {
+            answerTextarea.addEventListener('input', updateCharCount);
+            autoresizeTextarea(answerTextarea);
         }
         
         // 削除機能のリスナーを再設定
